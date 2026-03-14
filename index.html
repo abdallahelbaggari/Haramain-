@@ -141,7 +141,64 @@
         <ul id="txList"></ul>
       </div>
 
-      <!-- Other Utilities omitted for brevity, same approach -->
+      <!-- Prayer Times -->
+      <div id="prayerTimes" style="display:none;">
+        <h3 data-lang-en="Prayer Times" data-lang-ar="أوقات الصلاة" data-lang-fr="Heures de prière">Prayer Times</h3>
+        <ul id="prayerList"></ul>
+      </div>
+
+      <!-- Alerts -->
+      <div id="alerts" style="display:none;">
+        <h3 data-lang-en="Crowd & Safety Alerts" data-lang-ar="تنبيهات الحشود والأمان" data-lang-fr="Alertes de foule & sécurité">Crowd & Safety Alerts</h3>
+        <ul id="alertsList"></ul>
+      </div>
+
+      <!-- Donations -->
+      <div id="donations" style="display:none;">
+        <h3 data-lang-en="Zakat / Waqf Donations" data-lang-ar="تبرعات الزكاة / الوقف" data-lang-fr="Dons Zakat / Waqf">Zakat / Waqf Donations</h3>
+        <input type="number" id="donationAmount" placeholder="Amount in Pi"
+          data-placeholder-en="Amount in Pi" data-placeholder-ar="المبلغ بالـ Pi" data-placeholder-fr="Montant en Pi">
+        <button id="donateBtn" class="btn btn-primary" 
+          data-lang-en="Donate" data-lang-ar="تبرع" data-lang-fr="Faire un don">Donate</button>
+        <ul id="donationList"></ul>
+      </div>
+
+      <!-- Guide -->
+      <div id="guide" style="display:none;">
+        <h3 data-lang-en="Hajj & Umrah Guide" data-lang-ar="دليل الحج والعمرة" data-lang-fr="Guide Hajj & Omra">Hajj & Umrah Guide</h3>
+        <p data-lang-en="Step-by-step rituals, videos, tips, checklists..." 
+           data-lang-ar="الطقوس خطوة بخطوة، الفيديوهات، النصائح، القوائم..." 
+           data-lang-fr="Rituels étape par étape, vidéos, conseils, checklists...">
+           Step-by-step rituals, videos, tips, checklists...
+        </p>
+      </div>
+
+      <!-- Map -->
+      <div id="map" style="display:none;">
+        <h3 data-lang-en="Haramain Map" data-lang-ar="خريطة الحرمين" data-lang-fr="Carte Haramain">Haramain Map</h3>
+        <p data-lang-en="Indoor navigation and safety points..." data-lang-ar="التنقل الداخلي ونقاط الأمان..." data-lang-fr="Navigation intérieure et points de sécurité...">
+          Indoor navigation and safety points...
+        </p>
+      </div>
+
+      <!-- Community -->
+      <div id="community" style="display:none;">
+        <h3 data-lang-en="Global Pilgrim Community" data-lang-ar="المجتمع العالمي للحجاج" data-lang-fr="Communauté mondiale des pèlerins">Global Pilgrim Community</h3>
+        <p data-lang-en="Connect, chat, share tips, experiences..." data-lang-ar="تواصل، دردش، شارك النصائح والخبرات..." data-lang-fr="Connectez, discutez, partagez des conseils et expériences...">
+          Connect, chat, share tips, experiences...
+        </p>
+      </div>
+
+      <!-- Settings -->
+      <div id="settings" style="display:none;">
+        <h3 data-lang-en="Settings" data-lang-ar="الإعدادات" data-lang-fr="Paramètres">Settings</h3>
+        <label data-lang-en="Language:" data-lang-ar="اللغة:" data-lang-fr="Langue:">Language:</label>
+        <select id="langSettings">
+          <option value="en" data-lang-en="English" data-lang-ar="الإنجليزية" data-lang-fr="Anglais">English</option>
+          <option value="ar" data-lang-en="Arabic" data-lang-ar="العربية" data-lang-fr="Arabe">Arabic</option>
+          <option value="fr" data-lang-en="French" data-lang-ar="الفرنسية" data-lang-fr="Français">French</option>
+        </select>
+      </div>
     </div>
   </div>
 
