@@ -37,13 +37,9 @@ document.body.classList.remove("rtl");
 }
 
 if(langSelect){
-
 langSelect.addEventListener("change",function(){
-
 updateLanguage(this.value);
-
 });
-
 }
 
 /* =========================
@@ -61,7 +57,7 @@ version:"2.0",
 sandbox:true
 });
 
-console.log("Pi SDK Initialized (Testnet)");
+console.log("Pi SDK Initialized");
 
 }else{
 
@@ -88,13 +84,9 @@ loginBtn.addEventListener("click", async function(){
 try{
 
 const auth = await pi.authenticate(
-
 ["username","payments","wallet_address"],
-
 function(payment){},
-
-function(cancel){console.log("Payment cancelled")}
-
+function(cancel){}
 );
 
 currentUser = auth.user;
@@ -108,7 +100,7 @@ generatePilgrimQR();
 
 }catch(e){
 
-console.log(e);
+console.error(e);
 
 }
 
@@ -178,9 +170,7 @@ document.getElementById("pilgrimCode").innerText=code;
 if(canvas){
 
 QRCode.toCanvas(canvas,code,function(error){
-
 if(error) console.error(error);
-
 });
 
 }
@@ -188,7 +178,7 @@ if(error) console.error(error);
 }
 
 /* =========================
-   Demo Wallet Balance
+   Wallet Balance (Demo)
 ========================= */
 
 let balance=100;
@@ -199,9 +189,7 @@ const refreshBalance=document.getElementById("refreshBalance");
 function updateBalance(){
 
 if(balanceText){
-
 balanceText.innerText=balance+" π";
-
 }
 
 }
@@ -209,9 +197,7 @@ balanceText.innerText=balance+" π";
 if(refreshBalance){
 
 refreshBalance.addEventListener("click",function(){
-
 updateBalance();
-
 });
 
 }
@@ -226,6 +212,8 @@ function addTransaction(wallet,amount){
 
 const txList=document.getElementById("txList");
 
+if(!txList) return;
+
 const li=document.createElement("li");
 
 li.innerText="Sent "+amount+" π to "+wallet;
@@ -235,14 +223,14 @@ txList.prepend(li);
 }
 
 /* =========================
-   Frontend Payment Call
+   Backend Payment Calls
 ========================= */
 
 async function createPayment(paymentId,amount){
 
 try{
 
-const response=await fetch("/.netlify/functions/payment",{
+await fetch("/.netlify/functions/payment",{
 
 method:"POST",
 
@@ -257,8 +245,6 @@ amount:amount
 
 });
 
-return await response.json();
-
 }catch(err){
 
 console.error("Payment creation error",err);
@@ -271,7 +257,7 @@ async function completePayment(paymentId){
 
 try{
 
-const response=await fetch("/.netlify/functions/complete",{
+await fetch("/.netlify/functions/complete",{
 
 method:"POST",
 
@@ -285,8 +271,6 @@ paymentId:paymentId
 
 });
 
-return await response.json();
-
 }catch(err){
 
 console.error("Completion error",err);
@@ -296,20 +280,21 @@ console.error("Completion error",err);
 }
 
 /* =========================
-   Booking Payment (Pi Testnet)
+   Send Pi (Wallet Payment)
 ========================= */
 
-const payBookingBtn=document.getElementById("payBookingBtn");
+const sendPiBtn=document.getElementById("sendPiBtn");
 
-if(payBookingBtn){
+if(sendPiBtn){
 
-payBookingBtn.addEventListener("click",function(){
+sendPiBtn.addEventListener("click",function(){
 
-const amount=document.getElementById("bookingAmount").value;
+const wallet=document.getElementById("sendWalletId").value;
+const amount=document.getElementById("sendAmount").value;
 
-if(!amount){
+if(!wallet || !amount){
 
-alert("Enter amount");
+alert("Enter wallet ID and amount");
 
 return;
 
@@ -328,8 +313,8 @@ pi.createPayment(
 {
 
 amount:parseFloat(amount),
-memo:"Haramain Hajj/Umrah Booking",
-metadata:{type:"booking"}
+memo:"Haramain Wallet Transfer",
+metadata:{type:"wallet"}
 
 },
 
@@ -344,6 +329,8 @@ createPayment(paymentId,amount);
 onReadyForServerCompletion:function(paymentId,txid){
 
 completePayment(paymentId);
+
+addTransaction(wallet,amount);
 
 alert("Payment successful");
 
@@ -372,7 +359,73 @@ alert("Payment failed");
 }
 
 /* =========================
-   Navigation Menu
+   Booking Payment
+========================= */
+
+const payBookingBtn=document.getElementById("payBookingBtn");
+
+if(payBookingBtn){
+
+payBookingBtn.addEventListener("click",function(){
+
+const amount=document.getElementById("bookingAmount").value;
+
+if(!amount){
+
+alert("Enter amount");
+
+return;
+
+}
+
+pi.createPayment(
+
+{
+
+amount:parseFloat(amount),
+memo:"Haramain Hajj/Umrah Booking",
+metadata:{type:"booking"}
+
+},
+
+{
+
+onReadyForServerApproval:function(paymentId){
+
+createPayment(paymentId,amount);
+
+},
+
+onReadyForServerCompletion:function(paymentId){
+
+completePayment(paymentId);
+
+alert("Booking payment successful");
+
+},
+
+onCancel:function(){
+
+alert("Payment cancelled");
+
+},
+
+onError:function(err){
+
+console.error(err);
+
+}
+
+}
+
+);
+
+});
+
+}
+
+/* =========================
+   Navigation
 ========================= */
 
 const navDashboard=document.getElementById("navDashboard");
