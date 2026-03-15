@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let currentUser = null;
 let currentLang = "en";
+let pi;
 
 /* =========================
    Language Switching
@@ -13,35 +14,31 @@ let currentLang = "en";
 
 const langSelect = document.getElementById("langSelect");
 
-function updateLanguage(lang) {
+function updateLanguage(lang){
 
 currentLang = lang;
 
-document.querySelectorAll("[data-lang-en]").forEach(el => {
-
+document.querySelectorAll("[data-lang-en]").forEach(el=>{
 const text = el.getAttribute(`data-lang-${lang}`);
-if (text) el.innerText = text;
-
+if(text) el.innerText = text;
 });
 
-document.querySelectorAll("[data-placeholder-en]").forEach(el => {
-
+document.querySelectorAll("[data-placeholder-en]").forEach(el=>{
 const text = el.getAttribute(`data-placeholder-${lang}`);
-if (text) el.placeholder = text;
-
+if(text) el.placeholder = text;
 });
 
-if (lang === "ar") {
+if(lang === "ar"){
 document.body.classList.add("rtl");
-} else {
+}else{
 document.body.classList.remove("rtl");
 }
 
 }
 
-if (langSelect) {
+if(langSelect){
 
-langSelect.addEventListener("change", function () {
+langSelect.addEventListener("change",function(){
 
 updateLanguage(this.value);
 
@@ -53,18 +50,22 @@ updateLanguage(this.value);
    Pi SDK Initialization
 ========================= */
 
-let pi;
+function initPi(){
 
-function initPi() {
-
-if (window.Pi) {
+if(window.Pi){
 
 pi = window.Pi;
 
 pi.init({
-version: "2.0",
-sandbox: true
+version:"2.0",
+sandbox:true
 });
+
+console.log("Pi SDK Initialized (Testnet)");
+
+}else{
+
+console.log("Pi SDK not available");
 
 }
 
@@ -80,28 +81,32 @@ const loginBtn = document.getElementById("loginBtn");
 const dashboard = document.getElementById("dashboard");
 const landing = document.getElementById("landing");
 
-if (loginBtn) {
+if(loginBtn){
 
-loginBtn.addEventListener("click", async function () {
+loginBtn.addEventListener("click", async function(){
 
-try {
+try{
 
 const auth = await pi.authenticate(
+
 ["username","payments","wallet_address"],
+
 function(payment){},
+
 function(cancel){console.log("Payment cancelled")}
+
 );
 
 currentUser = auth.user;
 
 document.getElementById("usernameDisplay").innerText = currentUser.username;
 
-landing.style.display = "none";
-dashboard.style.display = "block";
+landing.style.display="none";
+dashboard.style.display="block";
 
 generatePilgrimQR();
 
-} catch(e) {
+}catch(e){
 
 console.log(e);
 
@@ -117,12 +122,12 @@ console.log(e);
 
 const logoutBtn = document.getElementById("logoutBtn");
 
-if (logoutBtn) {
+if(logoutBtn){
 
-logoutBtn.addEventListener("click", function(){
+logoutBtn.addEventListener("click",function(){
 
-dashboard.style.display = "none";
-landing.style.display = "block";
+dashboard.style.display="none";
+landing.style.display="block";
 
 });
 
@@ -145,19 +150,18 @@ function showUtility(id){
 hideUtilities();
 
 const el = document.getElementById(id);
+
 if(el) el.style.display="block";
 
 }
 
-/* Buttons */
+const pilgrimBtn=document.getElementById("pilgrimIdBtn");
+const bookingBtn=document.getElementById("bookingBtn");
+const walletBtn=document.getElementById("walletBtn");
 
-const pilgrimBtn = document.getElementById("pilgrimIdBtn");
-const bookingBtn = document.getElementById("bookingBtn");
-const walletBtn = document.getElementById("walletBtn");
-
-if(pilgrimBtn) pilgrimBtn.onclick = ()=>showUtility("pilgrimId");
-if(bookingBtn) bookingBtn.onclick = ()=>showUtility("booking");
-if(walletBtn) walletBtn.onclick = ()=>showUtility("wallet");
+if(pilgrimBtn) pilgrimBtn.onclick=()=>showUtility("pilgrimId");
+if(bookingBtn) bookingBtn.onclick=()=>showUtility("booking");
+if(walletBtn) walletBtn.onclick=()=>showUtility("wallet");
 
 /* =========================
    Pilgrim QR Generator
@@ -165,16 +169,17 @@ if(walletBtn) walletBtn.onclick = ()=>showUtility("wallet");
 
 function generatePilgrimQR(){
 
-const canvas = document.getElementById("pilgrimQr");
-const code = "HARAMAIN-" + Math.floor(Math.random()*100000000);
+const canvas=document.getElementById("pilgrimQr");
 
-document.getElementById("pilgrimCode").innerText = code;
+const code="HARAMAIN-"+Math.floor(Math.random()*100000000);
+
+document.getElementById("pilgrimCode").innerText=code;
 
 if(canvas){
 
-QRCode.toCanvas(canvas, code, function (error) {
+QRCode.toCanvas(canvas,code,function(error){
 
-if (error) console.error(error);
+if(error) console.error(error);
 
 });
 
@@ -183,18 +188,20 @@ if (error) console.error(error);
 }
 
 /* =========================
-   Wallet Demo Balance
+   Demo Wallet Balance
 ========================= */
 
-let balance = 100;
+let balance=100;
 
-const balanceText = document.getElementById("balance");
-const refreshBalance = document.getElementById("refreshBalance");
+const balanceText=document.getElementById("balance");
+const refreshBalance=document.getElementById("refreshBalance");
 
 function updateBalance(){
 
 if(balanceText){
-balanceText.innerText = balance + " π";
+
+balanceText.innerText=balance+" π";
+
 }
 
 }
@@ -212,70 +219,93 @@ updateBalance();
 updateBalance();
 
 /* =========================
-   Send Pi (Demo)
-========================= */
-
-const sendBtn = document.getElementById("sendPiBtn");
-
-if(sendBtn){
-
-sendBtn.addEventListener("click",function(){
-
-const wallet = document.getElementById("sendWalletId").value;
-const amount = parseFloat(document.getElementById("sendAmount").value);
-
-if(!wallet || !amount){
-
-alert("Enter wallet and amount");
-
-return;
-
-}
-
-if(amount > balance){
-
-alert("Insufficient balance");
-
-return;
-
-}
-
-balance -= amount;
-updateBalance();
-
-addTransaction(wallet,amount);
-
-});
-
-}
-
-/* =========================
    Transaction History
 ========================= */
 
 function addTransaction(wallet,amount){
 
-const txList = document.getElementById("txList");
+const txList=document.getElementById("txList");
 
-const li = document.createElement("li");
+const li=document.createElement("li");
 
-li.innerText = "Sent " + amount + " π to " + wallet;
+li.innerText="Sent "+amount+" π to "+wallet;
 
 txList.prepend(li);
 
 }
 
 /* =========================
-   Booking Payment
+   Frontend Payment Call
 ========================= */
 
-const payBookingBtn = document.getElementById("payBookingBtn");
+async function createPayment(paymentId,amount){
+
+try{
+
+const response=await fetch("/.netlify/functions/payment",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+paymentId:paymentId,
+amount:amount
+})
+
+});
+
+return await response.json();
+
+}catch(err){
+
+console.error("Payment creation error",err);
+
+}
+
+}
+
+async function completePayment(paymentId){
+
+try{
+
+const response=await fetch("/.netlify/functions/complete",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+paymentId:paymentId
+})
+
+});
+
+return await response.json();
+
+}catch(err){
+
+console.error("Completion error",err);
+
+}
+
+}
+
+/* =========================
+   Booking Payment (Pi Testnet)
+========================= */
+
+const payBookingBtn=document.getElementById("payBookingBtn");
 
 if(payBookingBtn){
 
 payBookingBtn.addEventListener("click",function(){
 
-const amount = document.getElementById("bookingAmount").value;
+const amount=document.getElementById("bookingAmount").value;
 
 if(!amount){
 
@@ -285,7 +315,57 @@ return;
 
 }
 
-alert("Booking payment submitted (Testnet)");
+if(!pi){
+
+alert("Pi SDK not available");
+
+return;
+
+}
+
+pi.createPayment(
+
+{
+
+amount:parseFloat(amount),
+memo:"Haramain Hajj/Umrah Booking",
+metadata:{type:"booking"}
+
+},
+
+{
+
+onReadyForServerApproval:function(paymentId){
+
+createPayment(paymentId,amount);
+
+},
+
+onReadyForServerCompletion:function(paymentId,txid){
+
+completePayment(paymentId);
+
+alert("Payment successful");
+
+},
+
+onCancel:function(){
+
+alert("Payment cancelled");
+
+},
+
+onError:function(err){
+
+console.error(err);
+
+alert("Payment failed");
+
+}
+
+}
+
+);
 
 });
 
@@ -295,7 +375,7 @@ alert("Booking payment submitted (Testnet)");
    Navigation Menu
 ========================= */
 
-const navDashboard = document.getElementById("navDashboard");
+const navDashboard=document.getElementById("navDashboard");
 
 if(navDashboard){
 
