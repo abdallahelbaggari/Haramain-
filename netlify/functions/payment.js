@@ -3,8 +3,6 @@
 const axios = require("axios");
 
 const PI_API = "https://api.minepi.com/v2/payments";
-
-// Use your Pi Developer Key
 const PI_API_KEY = process.env.PI_API_KEY;
 
 exports.handler = async function (event, context) {
@@ -13,12 +11,12 @@ exports.handler = async function (event, context) {
 
   try {
 
+    const data = JSON.parse(event.body || "{}");
+
     // -----------------------------
-    // Create Payment
+    // CREATE PAYMENT
     // -----------------------------
     if (method === "POST") {
-
-      const data = JSON.parse(event.body);
 
       const paymentData = {
         amount: data.amount,
@@ -41,15 +39,35 @@ exports.handler = async function (event, context) {
         statusCode: 200,
         body: JSON.stringify(response.data)
       };
-
     }
 
     // -----------------------------
-    // Complete Payment
+    // APPROVE PAYMENT
+    // -----------------------------
+    if (method === "PATCH") {
+
+      const paymentId = data.paymentId;
+
+      const response = await axios.post(
+        `${PI_API}/${paymentId}/approve`,
+        {},
+        {
+          headers: {
+            Authorization: `Key ${PI_API_KEY}`
+          }
+        }
+      );
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify(response.data)
+      };
+    }
+
+    // -----------------------------
+    // COMPLETE PAYMENT
     // -----------------------------
     if (method === "PUT") {
-
-      const data = JSON.parse(event.body);
 
       const paymentId = data.paymentId;
 
@@ -67,7 +85,6 @@ exports.handler = async function (event, context) {
         statusCode: 200,
         body: JSON.stringify(response.data)
       };
-
     }
 
     return {
@@ -80,7 +97,7 @@ exports.handler = async function (event, context) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: error.message
+        error: error.response?.data || error.message
       })
     };
 
