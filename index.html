@@ -1,36 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Haramain</title>
 
-<meta name="description" content="Haramain — Your Complete Pilgrim Companion. Secure Pi payments and premium utilities for Hajj & Umrah.">
+<meta name="description"
+content="Haramain — Your Complete Pilgrim Companion for Hajj and Umrah.">
 
 <link rel="icon" href="logo.png">
+
 <link rel="stylesheet" href="style.css">
 
-<!-- QR Generator -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
-<!-- Pi SDK -->
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-
-<script>
-/* Initialize Pi SDK */
-document.addEventListener("DOMContentLoaded", function () {
-
-  if (window.Pi) {
-    Pi.init({
-      version: "2.0",
-      sandbox: true
-    });
-
-    document.getElementById("status").style.display = "none";
-  }
-
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 </head>
 
@@ -38,169 +23,162 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <div class="container">
 
-<!-- LANDING -->
+<!-- LANDING PAGE -->
+
 <div id="landing" class="card">
 
 <img src="logo.png" class="logo">
 
-<h1>Haramain</h1>
+<h1 data-lang-en="Haramain"
+data-lang-ar="الحرمين"
+data-lang-fr="Haramain">
+Haramain
+</h1>
 
-<p>Your Complete Pilgrim Companion</p>
+<p
+data-lang-en="Your Complete Pilgrim Companion"
+data-lang-ar="رفيق الحاج الكامل"
+data-lang-fr="Votre compagnon de pèlerinage complet">
 
-<label>Language:</label>
+Your Complete Pilgrim Companion
 
-<select id="langSelect" class="lang-select">
+</p>
+
+<label
+data-lang-en="Language:"
+data-lang-ar="اللغة:"
+data-lang-fr="Langue:">
+Language:
+</label>
+
+<select id="langSelect">
+
 <option value="en">English</option>
 <option value="ar">Arabic</option>
 <option value="fr">French</option>
+
 </select>
 
-<button id="loginBtn" class="btn btn-primary">
+<button id="loginBtn"
+data-lang-en="🔐 Login / Register (Pi)"
+data-lang-ar="🔐 تسجيل الدخول / التسجيل"
+data-lang-fr="🔐 Connexion / Inscription">
+
 🔐 Login / Register (Pi)
+
 </button>
 
 </div>
 
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="card" style="display:none;">
 
-<header>
+<div id="dashboard" style="display:none">
 
 <h2>
-Welcome, <span id="usernameDisplay"></span>
+
+<span data-lang-en="Welcome,"
+data-lang-ar="مرحباً,"
+data-lang-fr="Bienvenue,">
+Welcome,
+</span>
+
+<span id="username"></span>
+
 </h2>
 
-<button id="logoutBtn" class="btn btn-secondary">
+<button id="logoutBtn"
+data-lang-en="Logout"
+data-lang-ar="تسجيل الخروج"
+data-lang-fr="Déconnexion">
+
 Logout
+
 </button>
 
-</header>
 
+<!-- QUICK ACCESS -->
 
-<h3>Quick Access</h3>
+<h3
+data-lang-en="Quick Access"
+data-lang-ar="الوصول السريع"
+data-lang-fr="Accès rapide">
+
+Quick Access
+
+</h3>
 
 <div class="grid">
 
-<button class="btn btn-primary" id="pilgrimIdBtn">
-Pilgrim ID & Profile
-</button>
+<button id="btnID">Pilgrim ID</button>
 
-<button class="btn btn-primary" id="bookingBtn">
-Hajj & Umrah Booking
-</button>
+<button id="btnBooking">Booking</button>
 
-<button class="btn btn-primary" id="marketBtn">
-Marketplace
-</button>
+<button id="btnWallet">Wallet</button>
 
-<button class="btn btn-primary" id="walletBtn">
-Pi Wallet & Payments
-</button>
+<button id="btnPrayer">Prayer</button>
 
-<button class="btn btn-primary" id="prayerBtn">
-Prayer Times
-</button>
+<button id="btnAlerts">Alerts</button>
 
-<button class="btn btn-primary" id="alertsBtn">
-Crowd & Safety Alerts
-</button>
+<button id="btnDonate">Donations</button>
 
 </div>
-
-
-<!-- NAVIGATION -->
-
-<nav class="card">
-
-<ul>
-
-<li><a href="#" id="navDashboard">Dashboard</a></li>
-
-<li><a href="#" id="navGuide">Guide & Tutorials</a></li>
-
-<li><a href="#" id="navMap">Haramain Map</a></li>
-
-<li><a href="#" id="navDonations">Zakat / Waqf Donations</a></li>
-
-<li><a href="#" id="navCommunity">Community</a></li>
-
-<li><a href="#" id="navSettings">Settings</a></li>
-
-</ul>
-
-</nav>
 
 
 <!-- UTILITIES -->
 
-<div id="utilities" class="card">
 
-
-<!-- PILGRIM ID -->
-
-<div id="pilgrimId" style="display:none">
+<div id="pilgrimID" class="utility">
 
 <h3>Pilgrim Digital ID</h3>
 
-<canvas id="pilgrimQr"></canvas>
+<canvas id="qr"></canvas>
 
-<p>ID: <span id="pilgrimCode"></span></p>
-
-</div>
-
-
-<!-- BOOKING -->
-
-<div id="booking" style="display:none">
-
-<h3>Hajj & Umrah Booking</h3>
-
-<input type="text" id="flight" placeholder="Flight (Mecca ↔ Medina)">
-
-<input type="text" id="hotel" placeholder="Hotel / Accommodation">
-
-<input type="text" id="transport" placeholder="Transport / Shuttle">
-
-<input type="number" id="bookingAmount" placeholder="Amount in Pi">
-
-<button id="payBookingBtn" class="btn btn-primary">
-Pay & Book
-</button>
+<p>ID: <span id="pid"></span></p>
 
 </div>
 
 
-<!-- WALLET -->
 
-<div id="wallet" style="display:none">
+<div id="booking" class="utility">
 
-<h3>Pi Wallet & Payments</h3>
+<h3>Hajj / Umrah Booking</h3>
 
-<p>Balance: <span id="balance">0 π</span></p>
+<input id="flight" placeholder="Flight">
 
-<button id="refreshBalance" class="btn btn-secondary">
-Refresh Balance
-</button>
+<input id="hotel" placeholder="Hotel">
 
-<input type="text" id="sendWalletId" placeholder="Recipient Wallet ID">
+<input id="transport" placeholder="Transport">
 
-<input type="number" id="sendAmount" placeholder="Amount in π">
+<input id="amount" type="number" placeholder="Amount π">
 
-<button id="sendPiBtn" class="btn btn-primary">
-Send Pi
-</button>
-
-<h4>Transaction History</h4>
-
-<ul id="txList"></ul>
+<button id="payBtn">Pay & Book</button>
 
 </div>
 
 
-<!-- PRAYER -->
 
-<div id="prayerTimes" style="display:none">
+<div id="wallet" class="utility">
+
+<h3>Pi Wallet</h3>
+
+<p>Balance: <span id="balance">0</span> π</p>
+
+<button id="refreshBalance">Refresh Balance</button>
+
+<input id="sendTo" placeholder="Wallet ID">
+
+<input id="sendAmount" type="number" placeholder="Amount">
+
+<button id="sendBtn">Send Pi</button>
+
+<ul id="txHistory"></ul>
+
+</div>
+
+
+
+<div id="prayer" class="utility">
 
 <h3>Prayer Times</h3>
 
@@ -209,107 +187,40 @@ Send Pi
 </div>
 
 
-<!-- ALERTS -->
 
-<div id="alerts" style="display:none">
+<div id="alerts" class="utility">
 
-<h3>Crowd & Safety Alerts</h3>
+<h3>Crowd Alerts</h3>
 
 <ul id="alertsList"></ul>
 
 </div>
 
 
-<!-- DONATIONS -->
 
-<div id="donations" style="display:none">
+<div id="donations" class="utility">
 
-<h3>Zakat / Waqf Donations</h3>
+<h3>Zakat / Waqf</h3>
 
-<input type="number" id="donationAmount" placeholder="Amount in Pi">
+<input id="donateAmount" type="number" placeholder="Amount π">
 
-<button id="donateBtn" class="btn btn-primary">
-Donate
-</button>
+<button id="donateBtn">Donate</button>
 
-<ul id="donationList"></ul>
+<ul id="donationHistory"></ul>
 
 </div>
 
 
-<!-- GUIDE -->
-
-<div id="guide" style="display:none">
-
-<h3>Hajj & Umrah Guide</h3>
-
-<p>
-Step-by-step rituals, videos, tips, checklists.
-</p>
-
 </div>
 
 
-<!-- MAP -->
+<div id="status">
 
-<div id="map" style="display:none">
-
-<h3>Haramain Map</h3>
-
-<p>
-Indoor navigation and safety points.
-</p>
+Open Haramain in Pi Browser to continue
 
 </div>
 
-
-<!-- COMMUNITY -->
-
-<div id="community" style="display:none">
-
-<h3>Global Pilgrim Community</h3>
-
-<p>
-Connect, chat, share tips and experiences.
-</p>
-
-</div>
-
-
-<!-- SETTINGS -->
-
-<div id="settings" style="display:none">
-
-<h3>Settings</h3>
-
-<label>Language:</label>
-
-<select id="langSettings">
-
-<option value="en">English</option>
-
-<option value="ar">Arabic</option>
-
-<option value="fr">French</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- STATUS -->
-
-<div id="status" class="card">
-Open Haramain in Pi Browser to continue.
-</div>
-
-<footer>
-© 2026 Haramain
-</footer>
+<footer>© 2026 Haramain</footer>
 
 </div>
 
