@@ -1,441 +1,156 @@
-/* ============================
-HARAMAIN SCRIPT
-Pi Testnet Ready
-============================ */
+// ==========================
+// script.js for Haramain
+// ==========================
 
-let currentUser = null;
-let currentLang = "en";
+// DOM Elements
+const landing = document.getElementById('landing');
+const dashboard = document.getElementById('dashboard');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const usernameSpan = document.getElementById('username');
+const langSelect = document.getElementById('langSelect');
+const status = document.getElementById('status');
 
-/* ============================
-LANGUAGE SWITCHING
-============================ */
+// Utilities
+const utilities = ['pilgrimID', 'booking', 'wallet', 'prayer', 'alerts', 'donations'];
+const utilityButtons = {
+  btnID: 'pilgrimID',
+  btnBooking: 'booking',
+  btnWallet: 'wallet',
+  btnPrayer: 'prayer',
+  btnAlerts: 'alerts',
+  btnDonate: 'donations'
+};
 
-function applyLanguage(lang){
+// Pilgrim ID elements
+const qrCanvas = document.getElementById('qr');
+const pidSpan = document.getElementById('pid');
 
-currentLang = lang;
+// Wallet elements
+const balanceSpan = document.getElementById('balance');
+const txHistory = document.getElementById('txHistory');
 
-document.querySelectorAll("[data-lang-en]").forEach(el =>{
+// Donations
+const donationHistory = document.getElementById('donationHistory');
 
-let text = el.getAttribute("data-lang-"+lang);
+// ==========================
+// Pi Login / Logout
+// ==========================
+loginBtn.addEventListener('click', async () => {
+  try {
+    // Pi login
+    const user = await Pi.authenticate({ app_name: 'Haramain' });
+    if (user) {
+      landing.style.display = 'none';
+      dashboard.style.display = 'block';
+      usernameSpan.textContent = user.username || 'Pilgrim';
+      status.style.display = 'none';
 
-if(text){
-el.innerText = text;
-}
-
+      // Generate QR code for Pilgrim ID
+      pidSpan.textContent = user.id;
+      QRCode.toCanvas(qrCanvas, user.id, { width: 150 });
+    }
+  } catch (err) {
+    alert('Login failed. Open Haramain in Pi Browser.');
+  }
 });
 
+logoutBtn.addEventListener('click', () => {
+  landing.style.display = 'block';
+  dashboard.style.display = 'none';
+  usernameSpan.textContent = '';
+  utilities.forEach(id => document.getElementById(id).style.display = 'none');
+  status.style.display = 'block';
+});
+
+// ==========================
+// Language Switching
+// ==========================
+langSelect.addEventListener('change', () => {
+  const lang = langSelect.value;
+  document.querySelectorAll('[data-lang-en]').forEach(el => {
+    const text = el.dataset[`lang${lang.toUpperCase()}`];
+    if (text) el.textContent = text;
+  });
+});
+
+// ==========================
+// Utilities Toggle
+// ==========================
+Object.keys(utilityButtons).forEach(btnId => {
+  const btn = document.getElementById(btnId);
+  const utilityId = utilityButtons[btnId];
+  btn.addEventListener('click', () => {
+    // Hide all
+    utilities.forEach(id => document.getElementById(id).style.display = 'none');
+    // Show selected
+    document.getElementById(utilityId).style.display = 'block';
+  });
+});
+
+// ==========================
+// Mock Wallet Functions
+// ==========================
+let balance = 0;
+const transactions = [];
+
+document.getElementById('refreshBalance').addEventListener('click', () => {
+  balanceSpan.textContent = balance.toFixed(2);
+});
+
+document.getElementById('sendBtn').addEventListener('click', () => {
+  const sendTo = document.getElementById('sendTo').value;
+  const sendAmount = parseFloat(document.getElementById('sendAmount').value);
+  if (!sendTo || isNaN(sendAmount) || sendAmount <= 0 || sendAmount > balance) {
+    alert('Invalid transaction.');
+    return;
+  }
+  balance -= sendAmount;
+  balanceSpan.textContent = balance.toFixed(2);
+  transactions.push(`Sent ${sendAmount.toFixed(2)} π to ${sendTo}`);
+  renderTransactions();
+});
+
+function renderTransactions() {
+  txHistory.innerHTML = '';
+  transactions.forEach(tx => {
+    const li = document.createElement('li');
+    li.textContent = tx;
+    txHistory.appendChild(li);
+  });
 }
 
-/* language select */
-
-document.getElementById("langSelect").addEventListener("change",(e)=>{
-
-applyLanguage(e.target.value)
-
-})
-
-
-
-/* ============================
-UTILITY NAVIGATION
-============================ */
-
-function hideUtilities(){
-
-document.querySelectorAll(".utility").forEach(u=>{
-
-u.style.display="none"
-
-})
-
-}
-
-document.getElementById("btnID").onclick=()=>{
-
-hideUtilities()
-document.getElementById("pilgrimID").style.display="block"
-
-generatePilgrimID()
-
-}
-
-document.getElementById("btnBooking").onclick=()=>{
-
-hideUtilities()
-document.getElementById("booking").style.display="block"
-
-}
-
-document.getElementById("btnWallet").onclick=()=>{
-
-hideUtilities()
-document.getElementById("wallet").style.display="block"
-
-}
-
-document.getElementById("btnPrayer").onclick=()=>{
-
-hideUtilities()
-document.getElementById("prayer").style.display="block"
-
-loadPrayerTimes()
-
-}
-
-document.getElementById("btnAlerts").onclick=()=>{
-
-hideUtilities()
-document.getElementById("alerts").style.display="block"
-
-loadAlerts()
-
-}
-
-document.getElementById("btnDonate").onclick=()=>{
-
-hideUtilities()
-document.getElementById("donations").style.display="block"
-
-}
-
-
-
-/* ============================
-PI SDK INITIALIZATION
-============================ */
-
-const Pi = window.Pi;
-
-Pi.init({
-version:"2.0",
-sandbox:true
-})
-
-
-
-/* ============================
-LOGIN
-============================ */
-
-document.getElementById("loginBtn").addEventListener("click",async ()=>{
-
-try{
-
-const scopes=['username','payments'];
-
-const auth=await Pi.authenticate(scopes,onIncompletePaymentFound);
-
-currentUser=auth.user;
-
-document.getElementById("username").innerText=currentUser.username;
-
-document.getElementById("landing").style.display="none";
-
-document.getElementById("dashboard").style.display="block";
-
-generatePilgrimID();
-
-}catch(err){
-
-console.log(err)
-
-}
-
-})
-
-
-
-/* ============================
-LOGOUT
-============================ */
-
-document.getElementById("logoutBtn").onclick=()=>{
-
-location.reload()
-
-}
-
-
-
-/* ============================
-INCOMPLETE PAYMENT RECOVERY
-============================ */
-
-function onIncompletePaymentFound(payment){
-
-console.log("Recovering payment",payment)
-
-}
-
-
-
-/* ============================
-PILGRIM QR ID
-============================ */
-
-function generatePilgrimID(){
-
-if(!currentUser)return;
-
-let id="HARAMAIN-"+currentUser.username+"-"+Date.now();
-
-document.getElementById("pid").innerText=id;
-
-QRCode.toCanvas(
-
-document.getElementById("qr"),
-
-id,
-
-function(error){
-
-if(error) console.error(error)
-
-}
-
-)
-
-}
-
-
-
-/* ============================
-PRAYER TIMES
-============================ */
-
-function loadPrayerTimes(){
-
-let prayers=[
-
-"Fajr - 05:10",
-"Dhuhr - 12:20",
-"Asr - 15:45",
-"Maghrib - 18:10",
-"Isha - 19:30"
-
-]
-
-let list=document.getElementById("prayerList");
-
-list.innerHTML="";
-
-prayers.forEach(p=>{
-
-let li=document.createElement("li");
-li.innerText=p;
-list.appendChild(li);
-
-})
-
-}
-
-
-
-/* ============================
-CROWD ALERTS
-============================ */
-
-function loadAlerts(){
-
-let alerts=[
-
-"Gate 3 crowded",
-"Tawaf area busy",
-"Sa'i area moderate",
-"Mina transport delayed"
-
-]
-
-let list=document.getElementById("alertsList");
-
-list.innerHTML="";
-
-alerts.forEach(a=>{
-
-let li=document.createElement("li");
-li.innerText=a;
-list.appendChild(li);
-
-})
-
-}
-
-
-
-/* ============================
-BOOKING PAYMENT
-============================ */
-
-document.getElementById("payBtn").onclick=async()=>{
-
-let amount=parseFloat(document.getElementById("amount").value);
-
-if(!amount){
-
-alert("Enter amount");
-
-return;
-
-}
-
-try{
-
-const payment=await Pi.createPayment({
-
-amount:amount,
-
-memo:"Hajj / Umrah Booking",
-
-metadata:{type:"booking"}
-
-},{
-
-onReadyForServerApproval:function(paymentId){
-
-console.log("approve",paymentId)
-
-},
-
-onReadyForServerCompletion:function(paymentId,txid){
-
-console.log("complete",paymentId)
-
-},
-
-onCancel:function(paymentId){
-
-console.log("cancel",paymentId)
-
-},
-
-onError:function(error){
-
-console.log(error)
-
-}
-
-})
-
-}catch(e){
-
-console.log(e)
-
-}
-
-}
-
-
-
-/* ============================
-DONATION PAYMENT
-============================ */
-
-document.getElementById("donateBtn").onclick=async()=>{
-
-let amount=parseFloat(document.getElementById("donateAmount").value);
-
-if(!amount){
-
-alert("Enter amount");
-
-return;
-
-}
-
-try{
-
-await Pi.createPayment({
-
-amount:amount,
-
-memo:"Zakat Donation",
-
-metadata:{type:"donation"}
-
-},{
-
-onReadyForServerApproval:function(paymentId){
-
-console.log("approve",paymentId)
-
-},
-
-onReadyForServerCompletion:function(paymentId,txid){
-
-console.log("complete",paymentId)
-
-addDonationHistory(amount)
-
-},
-
-onCancel:function(paymentId){
-
-console.log("cancel")
-
-},
-
-onError:function(error){
-
-console.log(error)
-
-}
-
-})
-
-}catch(e){
-
-console.log(e)
-
-}
-
-}
-
-
-
-/* ============================
-DONATION HISTORY
-============================ */
-
-function addDonationHistory(amount){
-
-let li=document.createElement("li");
-
-li.innerText="Donated "+amount+" π";
-
-document.getElementById("donationHistory").appendChild(li)
-
-}
-
-
-
-/* ============================
-WALLET SIMULATION
-============================ */
-
-document.getElementById("sendBtn").onclick=()=>{
-
-let to=document.getElementById("sendTo").value;
-
-let amt=document.getElementById("sendAmount").value;
-
-let li=document.createElement("li");
-
-li.innerText="Sent "+amt+" π to "+to;
-
-document.getElementById("txHistory").appendChild(li)
-
-}
-
-
-
-/* ============================
-BALANCE REFRESH
-============================ */
-
-document.getElementById("refreshBalance").onclick=()=>{
-
-let balance=(Math.random()*100).toFixed(2);
-
-document.getElementById("balance").innerText=balance
-
-}
+// ==========================
+// Mock Donations
+// ==========================
+document.getElementById('donateBtn').addEventListener('click', () => {
+  const amount = parseFloat(document.getElementById('donateAmount').value);
+  if (isNaN(amount) || amount <= 0 || amount > balance) {
+    alert('Invalid donation.');
+    return;
+  }
+  balance -= amount;
+  balanceSpan.textContent = balance.toFixed(2);
+  const li = document.createElement('li');
+  li.textContent = `Donated ${amount.toFixed(2)} π`;
+  donationHistory.appendChild(li);
+});
+
+// ==========================
+// Mock Booking
+// ==========================
+document.getElementById('payBtn').addEventListener('click', () => {
+  const flight = document.getElementById('flight').value;
+  const hotel = document.getElementById('hotel').value;
+  const transport = document.getElementById('transport').value;
+  const amount = parseFloat(document.getElementById('amount').value);
+
+  if (!flight || !hotel || !transport || isNaN(amount) || amount <= 0 || amount > balance) {
+    alert('Invalid booking details or insufficient balance.');
+    return;
+  }
+
+  balance -= amount;
+  balanceSpan.textContent = balance.toFixed(2);
+  alert(`Booking confirmed!\nFlight: ${flight}\nHotel: ${hotel}\nTransport: ${transport}\nAmount: ${amount.toFixed(2)} π`);
+});
