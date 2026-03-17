@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Haramain</title>
+
   <meta name="description" content="Haramain — Your Complete Pilgrim Companion for Hajj and Umrah">
+
   <link rel="icon" href="logo.png">
   <link rel="stylesheet" href="style.css">
 
@@ -23,131 +25,143 @@
 <!-- ================= LANDING ================= -->
 <div id="landing" class="card">
 
-<img src="logo.png" class="logo" alt="Haramain Logo">
+  <img src="logo.png" class="logo" alt="Haramain Logo">
 
-<h1 data-lang-en="Haramain" data-lang-ar="الحرمين" data-lang-fr="Haramain">Haramain</h1>
+  <h1 data-lang-en="Haramain" data-lang-ar="الحرمين" data-lang-fr="Haramain">
+    Haramain
+  </h1>
 
-<p data-lang-en="Your Complete Pilgrim Companion"
-   data-lang-ar="رفيق الحاج الكامل"
-   data-lang-fr="Votre compagnon de pèlerinage complet">
-Your Complete Pilgrim Companion
-</p>
+  <p data-lang-en="Your Complete Pilgrim Companion"
+     data-lang-ar="رفيق الحاج الكامل"
+     data-lang-fr="Votre compagnon de pèlerinage complet">
+    Your Complete Pilgrim Companion
+  </p>
 
-<label data-lang-en="Language:" data-lang-ar="اللغة:" data-lang-fr="Langue:">Language:</label>
+  <label data-lang-en="Language:" data-lang-ar="اللغة:" data-lang-fr="Langue:">
+    Language:
+  </label>
 
-<select id="langSelect">
-  <option value="en">English</option>
-  <option value="ar">العربية</option>
-  <option value="fr">Français</option>
-</select>
+  <select id="langSelect">
+    <option value="en">English</option>
+    <option value="ar">العربية</option>
+    <option value="fr">Français</option>
+  </select>
 
-<button id="loginBtn">
-🔐 Login / Register (Pi)
-</button>
+  <button id="loginBtn">
+    🔐 Login / Register (Pi)
+  </button>
 
 </div>
 
 <!-- ================= DASHBOARD ================= -->
 <div id="dashboard" style="display:none">
 
-<h2>
-<span data-lang-en="Welcome," data-lang-ar="مرحباً," data-lang-fr="Bienvenue,">Welcome,</span>
-<span id="username"></span>
-</h2>
+  <h2>
+    <span data-lang-en="Welcome," data-lang-ar="مرحباً," data-lang-fr="Bienvenue,">
+      Welcome,
+    </span>
+    <span id="username"></span>
+  </h2>
 
-<button id="logoutBtn">Logout</button>
+  <button id="logoutBtn">Logout</button>
 
-<h3 data-lang-en="Quick Access" data-lang-ar="الوصول السريع" data-lang-fr="Accès rapide">
-Quick Access
-</h3>
+  <h3 data-lang-en="Quick Access" data-lang-ar="الوصول السريع" data-lang-fr="Accès rapide">
+    Quick Access
+  </h3>
 
-<div class="grid">
-  <button id="btnID">Pilgrim ID</button>
-  <button id="btnBooking">Booking</button>
-  <button id="btnWallet">Wallet</button>
-  <button id="btnPrayer">Prayer</button>
-  <button id="btnAlerts">Alerts</button>
-  <button id="btnDonate">Donations</button>
-</div>
+  <div class="grid">
+    <button id="btnID">Pilgrim ID</button>
+    <button id="btnBooking">Booking</button>
+    <button id="btnWallet">Wallet</button>
+    <button id="btnPrayer">Prayer</button>
+    <button id="btnAlerts">Alerts</button>
+    <button id="btnDonate">Donations</button>
+  </div>
 
-<!-- ================= UTILITIES ================= -->
-<div class="utilities">
+  <!-- ================= UTILITIES ================= -->
+  <div class="utilities">
 
-<!-- PILGRIM ID -->
-<div id="pilgrimID" class="utility" style="display:none">
-  <h3>Pilgrim Digital ID</h3>
-  <canvas id="qr"></canvas>
-  <p>ID: <span id="pid"></span></p>
-</div>
+    <!-- PILGRIM ID -->
+    <div id="pilgrimID" class="utility" style="display:none">
+      <h3>Pilgrim Digital ID</h3>
+      <canvas id="qr"></canvas>
+      <p>ID: <span id="pid"></span></p>
+    </div>
 
-<!-- BOOKING -->
-<div id="booking" class="utility" style="display:none">
-  <h3>Hajj / Umrah Booking</h3>
+    <!-- BOOKING -->
+    <div id="booking" class="utility" style="display:none">
+      <h3>Hajj / Umrah Booking</h3>
 
-  <input id="flight" placeholder="Flight">
-  <input id="hotel" placeholder="Hotel">
-  <input id="transport" placeholder="Transport">
-  <input id="amount" type="number" placeholder="Amount π">
+      <input id="flight" placeholder="Flight">
+      <input id="hotel" placeholder="Hotel">
+      <input id="transport" placeholder="Transport">
 
-  <button id="payBtn">💳 Pay & Book</button>
+      <!-- 🔥 FIX: ID MUST MATCH SCRIPT -->
+      <input id="amountInput" type="number" placeholder="Amount π">
 
-  <!-- IMPORTANT -->
-  <p id="paymentStatus"></p>
-</div>
+      <button id="payBtn">💳 Pay & Book</button>
 
-<!-- WALLET -->
-<div id="wallet" class="utility" style="display:none">
-  <h3>Pi Wallet</h3>
+      <!-- REQUIRED -->
+      <p id="paymentStatus"></p>
+    </div>
 
-  <p>
-    Balance: <span id="balance">0</span> π
-  </p>
+    <!-- WALLET -->
+    <div id="wallet" class="utility" style="display:none">
+      <h3>Pi Wallet</h3>
 
-  <button id="refreshBalance">Refresh Balance</button>
+      <p>
+        Balance: <span id="balance">0</span> π
+      </p>
 
-  <input id="sendTo" placeholder="Wallet ID">
-  <input id="sendAmount" type="number" placeholder="Amount">
+      <button id="refreshBalance">Refresh Balance</button>
 
-  <button id="sendBtn">Send Pi</button>
+      <input id="sendTo" placeholder="Wallet ID">
 
-  <h4>Transaction History</h4>
-  <ul id="txHistory"></ul>
-</div>
+      <!-- 🔥 FIX: MATCH SCRIPT -->
+      <input id="sendAmount" type="number" placeholder="Amount">
 
-<!-- PRAYER -->
-<div id="prayer" class="utility" style="display:none">
-  <h3>Prayer Times</h3>
-  <ul id="prayerList"></ul>
-</div>
+      <button id="sendBtn">Send Pi</button>
 
-<!-- ALERTS -->
-<div id="alerts" class="utility" style="display:none">
-  <h3>Crowd & Safety Alerts</h3>
-  <ul id="alertsList"></ul>
-</div>
+      <h4>Transaction History</h4>
+      <ul id="txHistory"></ul>
+    </div>
 
-<!-- DONATIONS -->
-<div id="donations" class="utility" style="display:none">
-  <h3>Zakat / Waqf</h3>
+    <!-- PRAYER -->
+    <div id="prayer" class="utility" style="display:none">
+      <h3>Prayer Times</h3>
+      <ul id="prayerList"></ul>
+    </div>
 
-  <input id="donateAmount" type="number" placeholder="Amount π">
+    <!-- ALERTS -->
+    <div id="alerts" class="utility" style="display:none">
+      <h3>Crowd & Safety Alerts</h3>
+      <ul id="alertsList"></ul>
+    </div>
 
-  <button id="donateBtn">Donate</button>
+    <!-- DONATIONS -->
+    <div id="donations" class="utility" style="display:none">
+      <h3>Zakat / Waqf</h3>
 
-  <h4>Donation History</h4>
-  <ul id="donationHistory"></ul>
-</div>
+      <!-- 🔥 FIX -->
+      <input id="donateAmount" type="number" placeholder="Amount π">
 
-</div>
+      <button id="donateBtn">Donate</button>
+
+      <h4>Donation History</h4>
+      <ul id="donationHistory"></ul>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- ================= STATUS ================= -->
 <div id="status">
-🧪 Pi TESTNET MODE — Open in Pi Browser
+  🧪 Pi TESTNET MODE — Open in Pi Browser
 </div>
 
 <footer>
-© 2026 Haramain
+  © 2026 Haramain
 </footer>
 
 </div>
