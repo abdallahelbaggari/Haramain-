@@ -1,19 +1,15 @@
-Pi.createPayment({
-  amount: 1,
-  memo: "Donation",
-  metadata: {type:"donation"}
-},{
-  onReadyForServerApproval: function(paymentId){
-    fetch("/.netlify/functions/approve",{
-      method:"POST",
-      body: JSON.stringify({paymentId})
-    })
-  },
+exports.handler = async (event) => {
 
-  onReadyForServerCompletion: function(paymentId){
-    fetch("/.netlify/functions/complete",{
-      method:"POST",
-      body: JSON.stringify({paymentId})
+  const { amount } = JSON.parse(event.body);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      payment: {
+        amount: amount,
+        memo: "Haramain Booking",
+        metadata: { type: "booking" }
+      }
     })
-  }
-});
+  };
+};
